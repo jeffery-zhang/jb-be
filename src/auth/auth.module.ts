@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportModule } from '@nestjs/passport'
-import { JwtModule } from '@nestjs/jwt'
+import { JwtModule, JwtService } from '@nestjs/jwt'
 
 import { UsersModule } from 'src/users/users.module'
 
@@ -16,5 +16,6 @@ import { UsersModule } from 'src/users/users.module'
       }),
     }),
   ],
+  providers: [JwtService],
 })
 export class AuthModule {}
