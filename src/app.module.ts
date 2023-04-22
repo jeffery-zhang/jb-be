@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
 
+import { AppController } from './app.controller'
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       expandVariables: true,
+      isGlobal: true,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -15,5 +18,6 @@ import { MongooseModule } from '@nestjs/mongoose'
       inject: [ConfigService],
     }),
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
