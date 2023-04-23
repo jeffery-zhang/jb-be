@@ -13,19 +13,29 @@ export class UsersService {
     return await this.userModel.estimatedDocumentCount()
   }
 
+  async findAll() {
+    return await this.userModel.find()
+  }
+
   async findOneById(id: string): Promise<User> {
-    return this.userModel.findById(id)
+    return await this.userModel.findById(id)
   }
 
   async findOneByUsername(username: string): Promise<User> {
-    return this.userModel.findOne({ username })
+    return await this.userModel.findOne({ username })
   }
 
   async findOneByMail(mail: string): Promise<User> {
-    return this.userModel.findOne({ mail })
+    return await this.userModel.findOne({ mail })
   }
 
   async create(registerDto: RegisterDto): Promise<User> {
-    return await this.userModel.create(registerDto)
+    const createTime = new Date().toLocaleString()
+    const updateTime = new Date().toLocaleString()
+    return await this.userModel.create({
+      ...registerDto,
+      createTime,
+      updateTime,
+    })
   }
 }

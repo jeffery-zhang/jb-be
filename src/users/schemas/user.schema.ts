@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 
+import { encryptPassword } from '../../shared/utils'
+
 export type UserDocument = User & Document
 
 @Schema()
@@ -25,3 +27,8 @@ export class User extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+UserSchema.pre<User>('save', async function (next) {
+  this.password = await encryptPassword(this.password)
+  next()
+})
