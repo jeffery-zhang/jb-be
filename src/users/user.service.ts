@@ -14,19 +14,19 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.userModel.find()
+    return await this.userModel.find().lean()
   }
 
   async findOneById(id: string): Promise<User> {
-    return await this.userModel.findById(id)
+    return await this.userModel.findById(id).lean()
   }
 
   async findOneByUsername(username: string): Promise<User> {
-    return await this.userModel.findOne({ username })
+    return await this.userModel.findOne({ username }).lean()
   }
 
   async findOneByMail(mail: string): Promise<User> {
-    return await this.userModel.findOne({ mail })
+    return await this.userModel.findOne({ mail }).lean()
   }
 
   async create(registerDto: RegisterDto): Promise<User> {

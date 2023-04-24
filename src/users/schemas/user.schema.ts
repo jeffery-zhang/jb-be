@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
+import { Role } from '../../roles/role.enum'
 
 import { encryptPassword } from '../../shared/utils'
 
@@ -18,6 +19,9 @@ export class User extends Document {
 
   @Prop()
   avatar: string
+
+  @Prop()
+  roles: Role[]
 
   @Prop({ required: true })
   createTime: Date

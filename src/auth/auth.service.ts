@@ -1,5 +1,10 @@
-import { Injectable, ForbiddenException } from '@nestjs/common'
+import {
+  Injectable,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { compareSync } from 'bcrypt'
 
 import { UsersService } from '../users/user.service'
 import { RegisterDto } from './dtos/register.dto'
@@ -12,11 +17,20 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  private generateJwt(username: string, user: User) {
-    const payload = {
-      username,
-      sub: user._id,
+  public async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.userService.findOneByUsername(username)
+    if (user) {
+      if (!compareSync(pass, user.password)) {
+        throw new UnauthorizedException('密码不正确')
+      }
+      const { password, ...rest } = user
+      return rest
     }
+    return null
+  }
+
+  public async login(user: User) {
+    const payload = { username: user.username, sub: user._id }
     return {
       authentication: this.jwtService.sign(payload),
     }
