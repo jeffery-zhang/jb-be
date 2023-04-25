@@ -18,7 +18,7 @@ async function bootstrap() {
   app.use(helmet())
 
   await app.listen(appPort, () => {
-    console.log('server is now running at port: ' + appPort)
+    console.log('server is now running on port: ' + appPort)
   })
 }
 bootstrap()
