@@ -28,6 +28,7 @@ export class UsersController {
     )
     if (!valid) return null
     const { password, ...rest } = updateDto
-    return await this.userService.update(id, rest)
+    await this.userService.update(id, rest)
+    return { message: '用户更新成功' }
   }
 }

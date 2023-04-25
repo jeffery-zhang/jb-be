@@ -33,6 +33,7 @@ export class AuthController {
     @Body() body: { oldPwd: string; password: string },
   ) {
     const id = req.user._id
-    return this.authService.changePwd(id, body.oldPwd, body.password)
+    await this.authService.changePwd(id, body.oldPwd, body.password)
+    return { message: '密码修改成功' }
   }
 }

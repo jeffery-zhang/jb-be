@@ -46,7 +46,7 @@ export class AuthService {
 
   public async register(registerDto: RegisterDto) {
     const { username, mail } = registerDto
-    const valid = this.userService.validateUsernameAndMail(username, mail)
+    const valid = await this.userService.validateUsernameAndMail(username, mail)
     if (!valid) return null
     const user = await this.userService.create(registerDto)
     return this.generateJwt(user)

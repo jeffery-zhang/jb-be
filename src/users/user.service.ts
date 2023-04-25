@@ -40,19 +40,16 @@ export class UsersService {
     })
   }
 
-  async update(id: string, updateDto: UpdateDto): Promise<{ message: string }> {
+  async update(id: string, updateDto: UpdateDto): Promise<User> {
     const updateTime = new Date()
-    await this.userModel.findByIdAndUpdate(
+    return await this.userModel.findByIdAndUpdate(
       id,
       {
         ...updateDto,
         updateTime,
       },
-      {
-        new: true,
-      },
+      { new: true },
     )
-    return { message: '用户修改成功' }
   }
 
   public async validateUsernameAndMail(username: string, mail: string) {

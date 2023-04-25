@@ -4,7 +4,7 @@ import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { GlobalExceptionFilter } from './shared/filters/exception.filter'
 import { BodyInterceptor } from './shared/interceptors/body.interceptor'
-import { CustomValidatePipe } from './shared/pipes/validate.pipe'
+import { ClassValidatePipe } from './shared/pipes/class-validate.pipe'
 
 const appPort = process.env.APP_PORT || 3001
 
@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   app.setGlobalPrefix('jbapi')
-  app.useGlobalPipes(new CustomValidatePipe())
+  app.useGlobalPipes(new ClassValidatePipe())
   app.useGlobalFilters(new GlobalExceptionFilter())
   app.useGlobalInterceptors(new BodyInterceptor())
   app.use(helmet())

@@ -14,6 +14,8 @@ import { Role } from '../../roles/role.enum'
 export class UpdateDto {
   @IsOptional()
   @IsString()
+  @MaxLength(10)
+  @MinLength(2)
   @NotContains('@')
   public readonly username?: string
 
