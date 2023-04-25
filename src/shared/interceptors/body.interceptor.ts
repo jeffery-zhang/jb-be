@@ -38,7 +38,8 @@ export class BodyInterceptor implements NestInterceptor {
         const res = context.switchToHttp().getResponse()
         const status = res.statusCode
         const success = status >= 200 && status < 300
-        return new ResponseBody(success, '', status, data)
+        const message = success && data.message ? data.message : '处理成功'
+        return new ResponseBody(success, message, status, data)
       }),
     )
   }
