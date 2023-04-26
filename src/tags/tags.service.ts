@@ -26,8 +26,8 @@ export class TagsService {
     return this.tagModel.findOne({ name }).lean()
   }
 
-  async search(keyword: string) {
-    const regex = new RegExp(keyword, 'i')
+  async search(keywords: string) {
+    const regex = new RegExp(keywords, 'i')
     const tags = await this.tagModel
       .find({
         $or: [{ name: { $regex: regex } }, { alias: { $regex: regex } }],
@@ -41,13 +41,7 @@ export class TagsService {
     if (tag) {
       throw new ConflictException('标签已存在')
     }
-    const createTime = new Date()
-    const updateTime = new Date()
-    return await this.tagModel.create({
-      ...createTagDto,
-      createTime,
-      updateTime,
-    })
+    return await this.tagModel.create(createTagDto)
   }
 
   async batchCreate(tags: string[]) {
@@ -58,11 +52,10 @@ export class TagsService {
     const availableTags = uniquetags.filter(
       (name) => !exists.some((tag) => tag.name === name),
     )
-    const createTime = new Date()
-    const updateTime = new Date()
-    return await this.tagModel.insertMany(
-      availableTags.map((name) => ({ name, createTime, updateTime })),
+    const newTags = await this.tagModel.insertMany(
+      availableTags.map((name) => ({ name })),
     )
+    return [...newTags, ...exists]
   }
 
   async update(updateTagDto: UpdateTagDto) {

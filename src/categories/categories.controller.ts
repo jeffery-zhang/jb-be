@@ -54,8 +54,8 @@ export class CategoriesController {
   }
 
   @Get('search')
-  async search(@Query('keyword') keyword: string) {
-    return await this.categoriesService.search(keyword)
+  async search(@Query('keywords') keywords: string) {
+    return await this.categoriesService.search(keywords)
   }
 
   @Get(':id')

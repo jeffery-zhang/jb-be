@@ -31,8 +31,7 @@ export class TagsController {
 
   @Post('batchCreate')
   async batchCreate(@Body() body: string[]) {
-    await this.tagsService.batchCreate(body)
-    return { message: '标签批量创建成功' }
+    return await this.tagsService.batchCreate(body)
   }
 
   @Put('save')
@@ -51,8 +50,8 @@ export class TagsController {
   }
 
   @Get('search')
-  async search(@Query('keyword') keyword: string) {
-    return await this.tagsService.search(keyword)
+  async search(@Query('keywords') keywords: string) {
+    return await this.tagsService.search(keywords)
   }
 
   @Get(':id')

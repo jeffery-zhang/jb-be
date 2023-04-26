@@ -28,8 +28,8 @@ export class CategoriesService {
     return await this.categoryModel.findOne({ name }).lean()
   }
 
-  async search(keyword: string) {
-    const regex = new RegExp(keyword, 'i')
+  async search(keywords: string) {
+    const regex = new RegExp(keywords, 'i')
     const categories = await this.categoryModel
       .find({
         $or: [{ name: { $regex: regex } }, { alias: { $regex: regex } }],
@@ -43,13 +43,7 @@ export class CategoriesService {
     if (category) {
       throw new ConflictException('分类已存在')
     }
-    const createTime = new Date()
-    const updateTime = new Date()
-    return await this.categoryModel.create({
-      ...createCateGoryDto,
-      createTime,
-      updateTime,
-    })
+    return await this.categoryModel.create(createCateGoryDto)
   }
 
   async update(updateCategoryDto: UpdateCateGoryDto) {

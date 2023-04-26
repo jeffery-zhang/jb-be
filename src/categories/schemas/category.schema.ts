@@ -17,7 +17,7 @@ export class Category extends Document {
   @Prop({ required: true, default: 0 })
   postsNum: number
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: new Date() })
   createTime: Date
 
   @Prop({ required: true, default: new Date() })
