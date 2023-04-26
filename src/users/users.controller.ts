@@ -1,10 +1,18 @@
-import { Controller, Get, Post, Request, Body, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Request,
+  Body,
+  UseGuards,
+  Put,
+} from '@nestjs/common'
 
 import { UsersService } from './user.service'
 import { JwtAuthGuard } from '../auth/jwt.stradegy'
 import { RolesGuard } from '../roles/role.guard'
 import { Roles } from '../roles/role.decorator'
-import { Role } from 'src/roles/role.enum'
+import { Role } from '../roles/role.enum'
 import { UpdateDto } from './dtos/update.dto'
 
 @Controller('users')
@@ -19,7 +27,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('update')
+  @Put('update')
   async updateUser(@Request() req, @Body() updateDto: UpdateDto) {
     const id = req.user._id
     const valid = await this.userService.validateUsernameAndMail(

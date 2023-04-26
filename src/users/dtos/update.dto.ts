@@ -8,7 +8,7 @@ import {
   Validate,
 } from 'class-validator'
 
-import { IsValidRoleArray } from 'src/roles/role.validator'
+import { IsValidRoleArray } from '../../roles/role.validator'
 import { Role } from '../../roles/role.enum'
 
 export class UpdateDto {

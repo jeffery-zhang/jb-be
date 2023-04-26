@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Request, UseGuards, Get } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  Request,
+  UseGuards,
+  Get,
+  Put,
+} from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 
 import { AuthService } from './auth.service'
@@ -27,7 +35,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('changePwd')
+  @Put('changePwd')
   public async changePwd(
     @Request() req,
     @Body() body: { oldPwd: string; password: string },

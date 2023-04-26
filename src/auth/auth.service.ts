@@ -9,8 +9,8 @@ import { compareSync } from 'bcrypt'
 
 import { UsersService } from '../users/user.service'
 import { RegisterDto } from './dtos/register.dto'
-import { User } from 'src/users/schemas/user.schema'
-import { encryptPassword } from 'src/shared/utils'
+import { User } from '../users/schemas/user.schema'
+import { encryptPassword } from '../shared/utils'
 
 @Injectable()
 export class AuthService {
