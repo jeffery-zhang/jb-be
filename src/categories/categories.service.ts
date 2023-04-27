@@ -5,6 +5,7 @@ import { Model } from 'mongoose'
 import { Category } from './schemas/category.schema'
 import { CreateCateGoryDto } from './dtos/create-category.dto'
 import { UpdateCateGoryDto } from './dtos/update-category.dto'
+import { ISearch, IReponseRecords } from '../shared/interfaces'
 
 @Injectable()
 export class CategoriesService {
@@ -28,14 +29,8 @@ export class CategoriesService {
     return await this.categoryModel.findOne({ name }).lean()
   }
 
-  async search(keywords: string) {
-    const regex = new RegExp(keywords, 'i')
-    const categories = await this.categoryModel
-      .find({
-        $or: [{ name: { $regex: regex } }, { alias: { $regex: regex } }],
-      })
-      .lean()
-    return categories
+  async search(params: ISearch) {
+    const conditions = {}
   }
 
   async create(createCateGoryDto: CreateCateGoryDto) {

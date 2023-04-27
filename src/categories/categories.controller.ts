@@ -18,14 +18,20 @@ import { Roles } from '../roles/role.decorator'
 import { Role } from '../roles/role.enum'
 import { RolesGuard } from '../roles/role.guard'
 import { ObjectIdPipe } from '../shared/pipes/object-id.pipe'
+import { ISearch } from '../shared/interfaces'
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Get()
+  @Get('all')
   async findAll() {
     return await this.categoriesService.findAll()
+  }
+
+  @Get()
+  async search(@Query() query: ISearch) {
+    return this.categoriesService.search(query)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -51,11 +57,6 @@ export class CategoriesController {
   async increase(@Param('id', ObjectIdPipe) id: string) {
     await this.categoriesService.increasePostsNum(id)
     return { message: '分类文章数量增加' }
-  }
-
-  @Get('search')
-  async search(@Query('keywords') keywords: string) {
-    return await this.categoriesService.search(keywords)
   }
 
   @Get(':id')

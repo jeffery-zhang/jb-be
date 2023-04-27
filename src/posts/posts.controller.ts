@@ -32,6 +32,7 @@ export class PostsController {
     return await this.postsService.create(req.user._id, createPostDto)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('save')
   async update(@Body() updatePostDto: UpdatePostDto) {
     return await this.postsService.update(updatePostDto)
@@ -42,6 +43,7 @@ export class PostsController {
     return await this.postsService.findOneById(id)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Query('id', ObjectIdPipe) id: string) {
     return await this.postsService.delete(id)
