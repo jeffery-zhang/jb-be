@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 
 import { Post } from './schemas/post.schema'
-import { ISearchParams } from './interfaces/post.interface'
+import { ISearchPostParams } from './interfaces/search-post.interface'
 import { CreatePostDto } from './dtos/create-post.dto'
 import { UpdatePostDto } from './dtos/update-post.dto'
 import { IReponseRecords } from '../shared/interfaces'
@@ -17,32 +17,30 @@ export class PostsService {
     return await this.postModel.estimatedDocumentCount()
   }
 
-  async search(params: ISearchParams): Promise<IReponseRecords<Post>> {
+  async search(params: ISearchPostParams): Promise<IReponseRecords<Post>> {
     const { conditions, pager, sorter } = filterSearchParams(params)
     // 根据搜索关键词进行匹配
     params.keywords &&
       (conditions['$or'] = [
-        { title: { $regexp: new RegExp(params.keywords, 'i') } },
-        { intro: { $regexp: new RegExp(params.keywords, 'i') } },
+        { title: { $regex: new RegExp(params.keywords, 'i') } },
+        { intro: { $regex: new RegExp(params.keywords, 'i') } },
       ])
 
-    // 执行查询操作
-    const page = pager.page
-    const pageSize = pager.pageSize
-    const skipCount = (page - 1) * pageSize
+    // 匹配所有包含某个标签的文档
+    conditions.tags && (conditions.tags = { $in: [params.tags] })
 
     const query = this.postModel
       .find(conditions)
-      .skip(skipCount)
-      .limit(pageSize)
+      .skip(pager.skipCount)
+      .limit(pager.pageSize)
       .sort(sorter)
 
     const result = await query.exec()
     const total = await this.getPostsCount()
 
     return {
-      page,
-      pageSize,
+      page: pager.page,
+      pageSize: pager.pageSize,
       total,
       records: result,
     }

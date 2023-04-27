@@ -1,9 +1,9 @@
 import { ISearch } from '../../shared/interfaces'
 
-export interface ISearchParams extends ISearch {
+export interface ISearchPostParams extends ISearch {
   author?: string
   category?: string
-  tag?: string
+  tags?: string
   sortBy?: Sorter
 }
 

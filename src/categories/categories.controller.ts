@@ -24,14 +24,19 @@ import { ISearch } from '../shared/interfaces'
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @Get()
+  async search(@Query() query: ISearch) {
+    return this.categoriesService.search(query)
+  }
+
   @Get('all')
   async findAll() {
     return await this.categoriesService.findAll()
   }
 
-  @Get()
-  async search(@Query() query: ISearch) {
-    return this.categoriesService.search(query)
+  @Get(':id')
+  async findOneById(@Param('id', ObjectIdPipe) id: string) {
+    return await this.categoriesService.findOneById(id)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -55,13 +60,7 @@ export class CategoriesController {
 
   @Put('increase/:id')
   async increase(@Param('id', ObjectIdPipe) id: string) {
-    await this.categoriesService.increasePostsNum(id)
-    return { message: '分类文章数量增加' }
-  }
-
-  @Get(':id')
-  async findOneById(@Param('id', ObjectIdPipe) id: string) {
-    return await this.categoriesService.findOneById(id)
+    return await this.categoriesService.increasePostsNum(id)
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

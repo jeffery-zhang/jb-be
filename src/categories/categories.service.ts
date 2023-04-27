@@ -5,6 +5,7 @@ import { Model } from 'mongoose'
 import { Category } from './schemas/category.schema'
 import { CreateCateGoryDto } from './dtos/create-category.dto'
 import { UpdateCateGoryDto } from './dtos/update-category.dto'
+import { filterSearchParams } from '../shared/utils'
 import { ISearch, IReponseRecords } from '../shared/interfaces'
 
 @Injectable()
@@ -17,6 +18,32 @@ export class CategoriesService {
     return await this.categoryModel.estimatedDocumentCount()
   }
 
+  async search(params: ISearch): Promise<IReponseRecords<Category>> {
+    const { conditions, pager, sorter } = filterSearchParams(params)
+
+    params.keywords &&
+      (conditions['$or'] = [
+        { name: { $regex: new RegExp(params.keywords, 'i') } },
+        { alias: { $regex: new RegExp(params.keywords, 'i') } },
+      ])
+
+    const query = this.categoryModel
+      .find(conditions)
+      .skip(pager.skipCount)
+      .limit(pager.pageSize)
+      .sort(sorter)
+
+    const result = await query.exec()
+    const total = await this.getCategoriesCount()
+
+    return {
+      page: pager.page,
+      pageSize: pager.pageSize,
+      total,
+      records: result,
+    }
+  }
+
   async findAll() {
     return await this.categoryModel.find().lean()
   }
@@ -27,10 +54,6 @@ export class CategoriesService {
 
   async findOneByName(name: string) {
     return await this.categoryModel.findOne({ name }).lean()
-  }
-
-  async search(params: ISearch) {
-    const conditions = {}
   }
 
   async create(createCateGoryDto: CreateCateGoryDto) {
@@ -58,9 +81,12 @@ export class CategoriesService {
   }
 
   async increasePostsNum(id: string) {
-    return await this.categoryModel.findByIdAndUpdate(id, {
-      $inc: { postsNum: 1 },
-    })
+    const category = await this.categoryModel.findByIdAndUpdate(
+      id,
+      { $inc: { postsNum: 1 } },
+      { new: true },
+    )
+    return category.postsNum
   }
 
   async delete(id: string) {

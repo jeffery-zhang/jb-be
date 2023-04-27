@@ -1,10 +1,12 @@
 import { Injectable, ConflictException } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 
 import { Tag } from './schemas/tag.schema'
 import { CreateTagDto } from './dtos/create-tag.dto'
 import { UpdateTagDto } from './dtos/update-tag.dto'
-import { InjectModel } from '@nestjs/mongoose'
+import { filterSearchParams } from '../shared/utils'
+import { ISearch, IReponseRecords } from '../shared/interfaces'
 
 @Injectable()
 export class TagsService {
@@ -12,6 +14,31 @@ export class TagsService {
 
   async getTagsCount() {
     return await this.tagModel.estimatedDocumentCount()
+  }
+
+  async search(params: ISearch): Promise<IReponseRecords<Tag>> {
+    const { conditions, pager, sorter } = filterSearchParams(params)
+
+    params.keywords &&
+      (conditions['$or'] = [
+        { name: { $regex: new RegExp(params.keywords, 'i') } },
+      ])
+
+    const query = this.tagModel
+      .find(conditions)
+      .skip(pager.skipCount)
+      .limit(pager.pageSize)
+      .sort(sorter)
+
+    const result = await query.exec()
+    const total = await this.getTagsCount()
+
+    return {
+      page: pager.page,
+      pageSize: pager.pageSize,
+      total,
+      records: result,
+    }
   }
 
   async findAll() {
@@ -24,16 +51,6 @@ export class TagsService {
 
   async findOneByName(name: string) {
     return this.tagModel.findOne({ name }).lean()
-  }
-
-  async search(keywords: string) {
-    const regex = new RegExp(keywords, 'i')
-    const tags = await this.tagModel
-      .find({
-        $or: [{ name: { $regex: regex } }, { alias: { $regex: regex } }],
-      })
-      .lean()
-    return tags
   }
 
   async create(createTagDto: CreateTagDto) {
@@ -71,9 +88,12 @@ export class TagsService {
   }
 
   async increasePostsNum(id: string) {
-    return await this.tagModel.findByIdAndUpdate(id, {
-      $inc: { postsNum: 1 },
-    })
+    const tag = await this.tagModel.findByIdAndUpdate(
+      id,
+      { $inc: { postsNum: 1 } },
+      { new: true },
+    )
+    return tag.postsNum
   }
 
   async delete(id: string) {
