@@ -1,12 +1,12 @@
 import { IsString, IsNotEmpty, Length } from 'class-validator'
 
-export class CreateCommentDto {
+export class UpdateReplyDto {
+  @IsNotEmpty()
+  @IsString()
+  id: string
+
   @IsNotEmpty()
   @IsString()
   @Length(1, 255)
   content: string
-
-  @IsNotEmpty()
-  @IsString()
-  post: string
 }

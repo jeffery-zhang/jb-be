@@ -8,17 +8,16 @@ import {
   Param,
   Put,
   Delete,
+  Request,
 } from '@nestjs/common'
 
 import { CommentsService } from './comments.service'
 import { CreateCommentDto } from './dtos/create-comment.dto'
 import { UpdateCommentDto } from './dtos/update-comment.dto'
 import { JwtAuthGuard } from '../auth/jwt.stradegy'
-import { Roles } from '../roles/role.decorator'
-import { Role } from '../roles/role.enum'
-import { RolesGuard } from '../roles/role.guard'
 import { ObjectIdPipe } from '../shared/pipes/object-id.pipe'
 import { ISearchCommentParams } from './interfaces/search-comment.interface'
+import { UserChecker } from './guards/user-checker.guard'
 
 @Controller('comments')
 export class CommentsController {
@@ -41,12 +40,13 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('save')
-  async create(@Body() body: CreateCommentDto) {
-    await this.commentsService.create(body)
+  async create(@Request() req, @Body() body: CreateCommentDto) {
+    const { _id, username } = req.user
+    await this.commentsService.create(_id, username, body)
     return { message: '评论发布成功' }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserChecker)
   @Put('save')
   async update(
     @Body('id', ObjectIdPipe) id: string,
@@ -62,8 +62,7 @@ export class CommentsController {
     return await this.commentsService.like(id)
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, UserChecker)
   @Delete(':id')
   async delete(@Param('id', ObjectIdPipe) id: string) {
     await this.commentsService.delete(id)

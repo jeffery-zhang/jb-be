@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module'
 import { CategoriesModule } from './categories/categories.module'
 import { TagsModule } from './tags/tags.module'
 import { PostsModule } from './posts/posts.module'
+import { CommentsModule } from './comments/comments.module'
+import { RepliesModule } from './replies/replies.module'
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { PostsModule } from './posts/posts.module'
     CategoriesModule,
     TagsModule,
     PostsModule,
+    CommentsModule,
+    RepliesModule,
   ],
   controllers: [AppController],
 })

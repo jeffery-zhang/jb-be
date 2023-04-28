@@ -56,8 +56,16 @@ export class CommentsService {
     return await this.commentModel.findOne({ name }).lean()
   }
 
-  async create(createCommentDto: CreateCommentDto) {
-    return await this.commentModel.create(createCommentDto)
+  async create(
+    userId: string,
+    username: string,
+    createCommentDto: CreateCommentDto,
+  ) {
+    return await this.commentModel.create({
+      ...createCommentDto,
+      userId,
+      username,
+    })
   }
 
   async update(updateCommentDto: UpdateCommentDto) {

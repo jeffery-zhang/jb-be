@@ -16,6 +16,7 @@ import { ISearchPostParams } from './interfaces/search-post.interface'
 import { CreatePostDto } from './dtos/create-post.dto'
 import { UpdatePostDto } from './dtos/update-post.dto'
 import { JwtAuthGuard } from '../auth/jwt.stradegy'
+import { UserChecker } from './guards/user-checker.guard'
 
 @Controller('posts')
 export class PostsController {
@@ -33,7 +34,7 @@ export class PostsController {
     return { message: '新建文章成功' }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserChecker)
   @Put('save')
   async update(
     @Body('id', ObjectIdPipe) id,
@@ -48,7 +49,7 @@ export class PostsController {
     return await this.postsService.findOneById(id)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserChecker)
   @Delete(':id')
   async delete(@Query('id', ObjectIdPipe) id: string) {
     await this.postsService.delete(id)
