@@ -80,15 +80,6 @@ export class CategoriesService {
     )
   }
 
-  async increasePostsNum(id: string) {
-    const category = await this.categoryModel.findByIdAndUpdate(
-      id,
-      { $inc: { postsNum: 1 } },
-      { new: true },
-    )
-    return category.postsNum
-  }
-
   async delete(id: string) {
     return await this.categoryModel.findByIdAndDelete(id)
   }

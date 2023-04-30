@@ -58,11 +58,6 @@ export class CategoriesController {
     return { message: '分类更新成功' }
   }
 
-  @Put('increase/:id')
-  async increase(@Param('id', ObjectIdPipe) id: string) {
-    return await this.categoriesService.increasePostsNum(id)
-  }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Delete(':id')

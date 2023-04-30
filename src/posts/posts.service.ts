@@ -8,10 +8,14 @@ import { CreatePostDto } from './dtos/create-post.dto'
 import { UpdatePostDto } from './dtos/update-post.dto'
 import { IReponseRecords } from '../shared/interfaces'
 import { filterSearchParams } from '../shared/utils'
+import { CategoriesService } from '../categories/categories.service'
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel('Post') private readonly postModel: Model<Post>) {}
+  constructor(
+    @InjectModel('Post') private readonly postModel: Model<Post>,
+    private readonly categoriesService: CategoriesService,
+  ) {}
 
   async getPostsCount() {
     return await this.postModel.estimatedDocumentCount()

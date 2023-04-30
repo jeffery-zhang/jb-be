@@ -60,11 +60,6 @@ export class TagsController {
     return { message: '标签更新成功' }
   }
 
-  @Put('increase/:id')
-  async increase(@Param('id', ObjectIdPipe) id: string) {
-    return await this.tagsService.increasePostsNum(id)
-  }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Delete(':id')

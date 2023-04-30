@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, Model } from 'mongoose'
+
+import { Category } from '../../categories/schemas/category.schema'
 
 export type PostDocument = Post & Document
 
@@ -8,7 +10,7 @@ export class Post extends Document {
   @Prop({ required: true })
   title: string
 
-  @Prop({ required: true })
+  @Prop()
   poster: string
 
   @Prop({ required: true })

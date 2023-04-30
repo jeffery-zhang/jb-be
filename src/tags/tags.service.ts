@@ -87,15 +87,6 @@ export class TagsService {
     })
   }
 
-  async increasePostsNum(id: string) {
-    const tag = await this.tagModel.findByIdAndUpdate(
-      id,
-      { $inc: { postsNum: 1 } },
-      { new: true },
-    )
-    return tag.postsNum
-  }
-
   async delete(id: string) {
     return await this.tagModel.findByIdAndDelete(id)
   }

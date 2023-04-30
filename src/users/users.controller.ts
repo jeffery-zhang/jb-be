@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common'
 
-import { UsersService } from './user.service'
+import { UsersService } from './users.service'
 import { JwtAuthGuard } from '../auth/jwt.stradegy'
 import { RolesGuard } from '../roles/role.guard'
 import { Roles } from '../roles/role.decorator'

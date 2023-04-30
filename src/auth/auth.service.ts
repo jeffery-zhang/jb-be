@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt'
 import { compareSync } from 'bcrypt'
 
-import { UsersService } from '../users/user.service'
+import { UsersService } from '../users/users.service'
 import { RegisterDto } from './dtos/register.dto'
 import { User } from '../users/schemas/user.schema'
 import { encryptPassword } from '../shared/utils'
