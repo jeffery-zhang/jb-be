@@ -1,7 +1,6 @@
 import {
   Injectable,
   ForbiddenException,
-  UnauthorizedException,
   BadRequestException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
@@ -32,7 +31,7 @@ export class AuthService {
     const user = await this.userService.findOneByUsername(username)
     if (user) {
       if (!compareSync(pass, user.password)) {
-        throw new UnauthorizedException('密码不正确')
+        throw new BadRequestException('密码不正确')
       }
       const { password, ...rest } = user
       return rest
@@ -40,16 +39,30 @@ export class AuthService {
     return null
   }
 
-  public async login(user: User) {
-    return this.generateJwt(user)
+  public async login(body: { username: string; password: string }) {
+    const user = await this.validateUser(body.username, body.password)
+    const { _id, username, mail, avatar } = user
+    return {
+      token: this.generateJwt(user),
+      id: _id,
+      username,
+      mail,
+      avatar,
+    }
   }
 
   public async register(registerDto: RegisterDto) {
-    const { username, mail } = registerDto
+    const { username, mail, avatar } = registerDto
     const valid = await this.userService.validateUsernameAndMail(username, mail)
     if (!valid) return null
     const user = await this.userService.create(registerDto)
-    return this.generateJwt(user)
+    return {
+      token: this.generateJwt(user),
+      id: user._id,
+      username,
+      mail,
+      avatar,
+    }
   }
 
   public async changePwd(id: string, oldPwd: string, newPwd: string) {
