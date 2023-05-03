@@ -39,6 +39,17 @@ export class AuthService {
     return null
   }
 
+  public async verify(user: any) {
+    const verified = await this.userService.findOneById(user._id)
+    if (!verified) return null
+    return {
+      id: verified._id,
+      username: verified.username,
+      mail: verified.mail,
+      avatar: verified.avatar,
+    }
+  }
+
   public async login(body: { username: string; password: string }) {
     const user = await this.validateUser(body.username, body.password)
     const { _id, username, mail, avatar } = user

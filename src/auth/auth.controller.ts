@@ -17,6 +17,12 @@ import { RegisterDto } from './dtos/register.dto'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('verify')
+  public async verify(@Request() req) {
+    return this.authService.verify(req.user)
+  }
+
   @UseGuards(AuthGuard('local'))
   @Post('login')
   public async login(@Body() body) {
@@ -24,12 +30,6 @@ export class AuthController {
       username: body.username,
       password: body.password,
     })
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('currentUser')
-  public async currentUser(@Request() req) {
-    return req.user
   }
 
   @Post('register')
