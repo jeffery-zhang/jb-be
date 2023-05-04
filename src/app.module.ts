@@ -10,6 +10,7 @@ import { TagsModule } from './tags/tags.module'
 import { PostsModule } from './posts/posts.module'
 import { CommentsModule } from './comments/comments.module'
 import { RepliesModule } from './replies/replies.module'
+import { MinioModule } from './minio/minio.module'
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RepliesModule } from './replies/replies.module'
     PostsModule,
     CommentsModule,
     RepliesModule,
+    MinioModule,
   ],
   controllers: [AppController],
 })
