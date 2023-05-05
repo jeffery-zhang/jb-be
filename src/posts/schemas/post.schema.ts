@@ -17,7 +17,10 @@ export class Post extends Document {
   intro: string
 
   @Prop({ required: true })
-  author: string
+  userId: string
+
+  @Prop({ required: true })
+  username: string
 
   @Prop({ required: true })
   isPublic: boolean

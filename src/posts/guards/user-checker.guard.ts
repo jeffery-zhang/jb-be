@@ -28,7 +28,7 @@ export class UserChecker implements CanActivate {
 
     if (roles.includes('admin')) return true
 
-    if (_id !== item.author) throw new UnauthorizedException('用户权限不足')
+    if (_id !== item.userId) throw new UnauthorizedException('用户权限不足')
 
     return true
   }

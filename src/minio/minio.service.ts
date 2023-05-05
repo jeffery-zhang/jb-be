@@ -34,7 +34,11 @@ export class MinioService {
           console.log(err)
           throw new BadRequestException('上传文件失败')
         }
-        resolve('上传成功')
+        const fileUrl = this.client.presignedGetObject(
+          this.bucketName,
+          fileName,
+        )
+        resolve(fileUrl)
       })
     })
   }

@@ -54,10 +54,11 @@ export class PostsService {
     return this.postModel.findById(id)
   }
 
-  async create(author: string, createPostDto: CreatePostDto) {
+  async create(userId: string, username: string, createPostDto: CreatePostDto) {
     return await this.postModel.create({
       ...createPostDto,
-      author,
+      userId,
+      username,
     })
   }
 

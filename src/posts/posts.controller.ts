@@ -30,7 +30,11 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @Post('save')
   async create(@Request() req, @Body() createPostDto: CreatePostDto) {
-    await this.postsService.create(req.user._id, createPostDto)
+    await this.postsService.create(
+      req.user._id,
+      req.user.username,
+      createPostDto,
+    )
     return { message: '新建文章成功' }
   }
 
