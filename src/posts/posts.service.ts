@@ -21,6 +21,10 @@ export class PostsService {
     return await this.postModel.estimatedDocumentCount()
   }
 
+  async getAllIds() {
+    return await this.postModel.find().select('_id').lean()
+  }
+
   async search(params: ISearchPostParams): Promise<IReponseRecords<Post>> {
     const { conditions, pager, sorter } = filterSearchParams(params)
     // 根据搜索关键词进行匹配
@@ -39,7 +43,7 @@ export class PostsService {
       .limit(pager.pageSize)
       .sort(sorter)
 
-    const result = await query.exec()
+    const result = await query.select('-content').exec()
     const total = await this.getPostsCount()
 
     return {

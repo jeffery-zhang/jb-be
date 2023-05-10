@@ -8,6 +8,7 @@ import {
   UseGuards,
   Request,
   Body,
+  Param,
 } from '@nestjs/common'
 
 import { PostsService } from './posts.service'
@@ -25,6 +26,11 @@ export class PostsController {
   @Get()
   async search(@Query() query: ISearchPostParams) {
     return await this.postsService.search(query)
+  }
+
+  @Get('ids')
+  async getAllIds() {
+    return await this.postsService.getAllIds()
   }
 
   @UseGuards(JwtAuthGuard)
@@ -49,13 +55,13 @@ export class PostsController {
   }
 
   @Get(':id')
-  async findOneById(@Query('id', ObjectIdPipe) id: string) {
+  async findOneById(@Param('id', ObjectIdPipe) id: string) {
     return await this.postsService.findOneById(id)
   }
 
   @UseGuards(JwtAuthGuard, UserChecker)
   @Delete(':id')
-  async delete(@Query('id', ObjectIdPipe) id: string) {
+  async delete(@Param('id', ObjectIdPipe) id: string) {
     await this.postsService.delete(id)
     return { message: '删除文章成功' }
   }
