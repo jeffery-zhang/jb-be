@@ -12,6 +12,7 @@ import { filterSearchParams } from '../shared/utils'
 import { CategoriesService } from '../categories/categories.service'
 import { ConfigService } from '@nestjs/config'
 import { MinioService } from '../minio/minio.service'
+import { updatePostContentImage } from '../shared/utils'
 
 @Injectable()
 export class PostsService {
@@ -22,7 +23,7 @@ export class PostsService {
     private readonly minioService: MinioService,
   ) {
     // this.updatePoster()
-    this.updateContent()
+    // this.updateContent()
   }
 
   async getPostsCount() {
@@ -86,6 +87,14 @@ export class PostsService {
     return await this.postModel.findByIdAndDelete(id)
   }
 
+  async increasePv(id: string) {
+    return await this.postModel.findOneAndUpdate(
+      { _id: id },
+      { $inc: { pv: 1 } },
+      { new: true },
+    )
+  }
+
   @Cron('0 0 0 * * *')
   async updatePoster() {
     const posters = await this.postModel.find().select('poster').lean()
@@ -120,20 +129,31 @@ export class PostsService {
   @Cron('0 0 0 * * *')
   async updateContent() {
     const contents = await this.postModel.find().select('content').lean()
-    const updates = contents.map((obj) => {
-      const baseUrl = `${this.configService.get(
-        'MINIO_HOST',
-      )}:${this.configService.get('MINIO_PORT')}`
-      const reg = /(\!\[.*\])\((.*?\))/g
-      console.log(obj.content.match(reg))
-      // const newContent = obj.content.replace(reg, async (match, p1, p2) => {
-      //   console.log(match)
-      //   console.log(p1)
-      //   console.log(p2)
-      //   const newUrl = await this.minioService.updateLink(p2)
-      //   return `${p1}(${newUrl})`
-      // })
-      return {}
-    })
+    const updates = await Promise.all(
+      contents.map(async (obj) => {
+        const reg = /(\!\[.*\])\((.*?\))/g
+        const newContent = await updatePostContentImage(
+          obj.content,
+          reg,
+          this.minioService.updateLink.bind(this.minioService),
+        )
+        return {
+          ...obj,
+          content: newContent,
+        }
+      }),
+    )
+
+    const updateOperations = updates.map((update) => ({
+      updateOne: {
+        filter: { _id: update._id },
+        update: {
+          $set: { content: update.content },
+        },
+      },
+    }))
+
+    await this.postModel.bulkWrite(updateOperations)
+    console.log('post module content image urls updated')
   }
 }

@@ -33,6 +33,12 @@ export class PostsController {
     return await this.postsService.getAllIds()
   }
 
+  @Get('realView/:id')
+  async viewOneById(@Param('id', ObjectIdPipe) id: string) {
+    this.postsService.increasePv(id)
+    return await this.postsService.findOneById(id)
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post('save')
   async create(@Request() req, @Body() createPostDto: CreatePostDto) {

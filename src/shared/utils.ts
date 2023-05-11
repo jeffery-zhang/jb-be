@@ -36,3 +36,22 @@ export const filterSearchParams = (params: ISearch) => {
 
   return { conditions, pager, sorter }
 }
+
+export const updatePostContentImage = async (
+  content: string,
+  regexp: RegExp,
+  update: (url: string) => Promise<string>,
+) => {
+  const matches = [...content.matchAll(regexp)]
+  const newVals = await Promise.all(
+    matches.map(async (match) => {
+      return await update(match[2])
+    }),
+  )
+  let contentCopy = content.slice()
+  matches.forEach((match, index) => {
+    contentCopy = contentCopy.replace(match[2], newVals[index])
+  })
+
+  return contentCopy
+}
