@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { Cron } from '@nestjs/schedule'
 
 import { Post } from './schemas/post.schema'
 import { ISearchPostParams } from './interfaces/search-post.interface'
@@ -9,13 +10,20 @@ import { UpdatePostDto } from './dtos/update-post.dto'
 import { IReponseRecords } from '../shared/interfaces'
 import { filterSearchParams } from '../shared/utils'
 import { CategoriesService } from '../categories/categories.service'
+import { ConfigService } from '@nestjs/config'
+import { MinioService } from '../minio/minio.service'
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel('Post') private readonly postModel: Model<Post>,
     private readonly categoriesService: CategoriesService,
-  ) {}
+    private readonly configService: ConfigService,
+    private readonly minioService: MinioService,
+  ) {
+    // this.updatePoster()
+    this.updateContent()
+  }
 
   async getPostsCount() {
     return await this.postModel.estimatedDocumentCount()
@@ -76,5 +84,56 @@ export class PostsService {
 
   async delete(id: string) {
     return await this.postModel.findByIdAndDelete(id)
+  }
+
+  @Cron('0 0 0 * * *')
+  async updatePoster() {
+    const posters = await this.postModel.find().select('poster').lean()
+    const validUrls = posters.filter(
+      (p) =>
+        p.poster && p.poster.includes(this.configService.get('MINIO_HOST')),
+    )
+
+    const updates = await Promise.all(
+      validUrls.map(async (obj) => {
+        const newUrl = await this.minioService.updateLink(obj.poster)
+        return {
+          ...obj,
+          poster: newUrl,
+        }
+      }),
+    )
+    const updateOperations = updates.map((update) => ({
+      updateOne: {
+        filter: { _id: update._id },
+        update: {
+          $set: { poster: update.poster },
+        },
+      },
+    }))
+    console.log(updateOperations)
+
+    await this.postModel.bulkWrite(updateOperations)
+    console.log('post module poster urls updated')
+  }
+
+  @Cron('0 0 0 * * *')
+  async updateContent() {
+    const contents = await this.postModel.find().select('content').lean()
+    const updates = contents.map((obj) => {
+      const baseUrl = `${this.configService.get(
+        'MINIO_HOST',
+      )}:${this.configService.get('MINIO_PORT')}`
+      const reg = /(\!\[.*\])\((.*?\))/g
+      console.log(obj.content.match(reg))
+      // const newContent = obj.content.replace(reg, async (match, p1, p2) => {
+      //   console.log(match)
+      //   console.log(p1)
+      //   console.log(p2)
+      //   const newUrl = await this.minioService.updateLink(p2)
+      //   return `${p1}(${newUrl})`
+      // })
+      return {}
+    })
   }
 }

@@ -29,17 +29,42 @@ export class MinioService {
     const hashFileName = createHash('md5').update(tmpFileName).digest('hex')
     const fileName = `${hashFileName}${ext}`
     return new Promise((resolve) => {
-      this.client.putObject(bucket, fileName, file.buffer, (err) => {
+      this.client.putObject(bucket, fileName, file.buffer, async (err) => {
         if (err) {
           console.log(err)
           throw new BadRequestException('上传文件失败')
         }
-        const fileUrl = this.client.presignedGetObject(
+        const fileUrl = await this.client.presignedUrl(
+          'GET',
           this.bucketName,
           fileName,
+          7 * 24 * 60 * 60,
         )
         resolve(fileUrl)
       })
     })
+  }
+
+  async updateLink(oldUrl: string) {
+    const validUrl = () => {
+      const baseUrl = `${this.configService.get(
+        'MINIO_HOST',
+      )}:${this.configService.get('MINIO_PORT')}`
+      if (oldUrl.includes(baseUrl)) {
+        return true
+      }
+      return false
+    }
+
+    if (!validUrl()) return oldUrl
+    const objectName = oldUrl.split('?')[0].split('/').slice(-1)[0]
+    const newUrl = await this.client.presignedUrl(
+      'GET',
+      this.bucketName,
+      objectName,
+      7 * 24 * 60 * 60,
+    )
+
+    return newUrl
   }
 }
