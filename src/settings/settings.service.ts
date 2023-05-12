@@ -41,18 +41,29 @@ export class SettingsService {
     }
   }
 
+  async findDefault() {
+    return await this.settingModel.findOne({ userId: 'default' })
+  }
+
   async findOneByUserId(userId: string) {
-    return await this.settingModel.findOne({ userId })
+    const setting = await this.settingModel.findOne({ userId })
+    if (!setting) {
+      return await this.findDefault()
+    }
+    return setting
   }
 
-  async create(dto: SettingDto) {
-    return await this.settingModel.create(dto)
+  async create(userId: string, dto: SettingDto) {
+    return await this.settingModel.create({
+      ...dto,
+      userId,
+    })
   }
 
-  async update(dto: SettingDto): Promise<any> {
+  async update(userId: string, dto: SettingDto): Promise<any> {
     const updateTime = new Date()
     return await this.settingModel.updateOne(
-      { userId: dto.userId },
+      { userId },
       {
         ...dto,
         updateTime,
@@ -61,5 +72,17 @@ export class SettingsService {
         new: true,
       },
     )
+  }
+
+  async putOne(dto: SettingDto, userId: string) {
+    const exists = await this.settingModel.findOne({ userId })
+    if (exists) {
+      return await this.update(userId, dto)
+    }
+    return await this.create(userId, dto)
+  }
+
+  async delete(id: string): Promise<any> {
+    return await this.settingModel.findByIdAndDelete(id)
   }
 }

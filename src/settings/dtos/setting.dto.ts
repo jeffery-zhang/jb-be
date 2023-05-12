@@ -1,10 +1,6 @@
-import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator'
+import { IsInt, IsString, Max, Min } from 'class-validator'
 
 export class SettingDto {
-  @IsNotEmpty()
-  @IsString()
-  userId: string
-
   @IsString()
   banner: string
 
