@@ -12,6 +12,7 @@ import { PostsModule } from './posts/posts.module'
 import { CommentsModule } from './comments/comments.module'
 import { RepliesModule } from './replies/replies.module'
 import { MinioModule } from './minio/minio.module'
+import { SettingsModule } from './settings/settings.module'
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { MinioModule } from './minio/minio.module'
     CommentsModule,
     RepliesModule,
     MinioModule,
+    SettingsModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model } from 'mongoose'
 
-import { Category } from '../../categories/schemas/category.schema'
-
 export type PostDocument = Post & Document
 
 @Schema()
