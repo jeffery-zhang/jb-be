@@ -4,6 +4,7 @@ import { MinioModule as MinioModuleLib } from 'nestjs-minio-client'
 
 import { MinioService } from './minio.service'
 import { MinioController } from './minio.controller'
+import { SettingsModule } from '../settings/settings.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MinioController } from './minio.controller'
       }),
       inject: [ConfigService],
     }),
+    SettingsModule,
   ],
   providers: [MinioService],
   controllers: [MinioController],

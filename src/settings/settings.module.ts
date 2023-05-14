@@ -3,15 +3,18 @@ import { MongooseModule } from '@nestjs/mongoose'
 
 import { SettingsService } from './settings.service'
 import { SettingsController } from './settings.controller'
-import { SettingSchema } from './schemas/setting.schema'
-import { MinioModule } from '../minio/minio.module'
+import { Setting, SettingSchema } from './schemas/setting.schema'
+import { Banner, BannerSchema } from './schemas/banner.schema'
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Setting', schema: SettingSchema }]),
-    MinioModule,
+    MongooseModule.forFeature([
+      { name: Setting.name, schema: SettingSchema },
+      { name: Banner.name, schema: BannerSchema },
+    ]),
   ],
   providers: [SettingsService],
   controllers: [SettingsController],
+  exports: [SettingsService],
 })
 export class SettingsModule {}

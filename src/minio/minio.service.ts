@@ -10,17 +10,16 @@ export class MinioService {
     private readonly minio: MinioServiceLib,
   ) {}
 
-  private readonly bucketName = this.configService.get('MINIO_BUCKET')
+  private readonly defaultBucket = this.configService.get('DEFAULT_BUCKET')
 
   get client() {
     return this.minio.client
   }
 
-  get bucket() {
-    return this.bucketName
-  }
-
-  async upload(file: Express.Multer.File, bucket: string = this.bucketName) {
+  async upload(
+    file: Express.Multer.File,
+    bucket: string = this.defaultBucket,
+  ): Promise<string> {
     file.originalname = Buffer.from(file.originalname, 'latin1').toString(
       'utf8',
     )
@@ -36,7 +35,7 @@ export class MinioService {
         }
         const fileUrl = await this.client.presignedUrl(
           'GET',
-          this.bucketName,
+          bucket,
           fileName,
           7 * 24 * 60 * 60,
         )
@@ -45,7 +44,7 @@ export class MinioService {
     })
   }
 
-  async updateLink(oldUrl: string) {
+  async updateLink(oldUrl: string, bucket: string = this.defaultBucket) {
     const validUrl = () => {
       const baseUrl = `${this.configService.get(
         'MINIO_HOST',
@@ -60,7 +59,7 @@ export class MinioService {
     const objectName = oldUrl.split('?')[0].split('/').slice(-1)[0]
     const newUrl = await this.client.presignedUrl(
       'GET',
-      this.bucketName,
+      bucket,
       objectName,
       7 * 24 * 60 * 60,
     )

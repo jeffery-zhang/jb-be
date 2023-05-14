@@ -131,7 +131,7 @@ export class PostsService {
     const contents = await this.postModel.find().select('content').lean()
     const updates = await Promise.all(
       contents.map(async (obj) => {
-        const reg = /(\!\[.*\])\((.*?\))/g
+        const reg = /(\!\[.*\])\((.*?)\)/g
         const newContent = await updatePostContentImage(
           obj.content,
           reg,
