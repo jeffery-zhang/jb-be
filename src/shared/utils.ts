@@ -1,4 +1,5 @@
 import { hashSync } from 'bcrypt'
+
 import { ISearch } from './interfaces'
 
 export const encryptPassword = async (password: string) =>
@@ -20,7 +21,7 @@ export const filterSearchParams = (params: ISearch) => {
   Object.keys(params).forEach((key) => {
     switch (true) {
       case ['page', 'pageSize'].includes(key):
-        if (params.page && params.pageSize) pager[key] = params[key]
+        pager[key] = parseInt(params[key])
         break
       case key === 'sortBy':
         if (params[key]) sorter[params[key]] = params['order'] || 'desc'
@@ -40,12 +41,13 @@ export const filterSearchParams = (params: ISearch) => {
 export const updatePostContentImage = async (
   content: string,
   regexp: RegExp,
-  update: (url: string) => Promise<string>,
+  update: (url: string, bucket?: string) => Promise<string>,
+  bucket: string,
 ) => {
   const matches = [...content.matchAll(regexp)]
   const newVals = await Promise.all(
     matches.map(async (match) => {
-      return await update(match[2])
+      return await update(match[2], bucket)
     }),
   )
   let contentCopy = content.slice()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
-import { ScheduleModule } from '@nestjs/schedule'
+import { ScheduleModule as ScheduleModuleLib } from '@nestjs/schedule'
 
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
@@ -13,6 +13,7 @@ import { CommentsModule } from './comments/comments.module'
 import { RepliesModule } from './replies/replies.module'
 import { MinioModule } from './minio/minio.module'
 import { SettingsModule } from './settings/settings.module'
+import { ScheduleModule } from './schedule/schedule.module'
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { SettingsModule } from './settings/settings.module'
     RepliesModule,
     MinioModule,
     SettingsModule,
-    ScheduleModule.forRoot(),
+    ScheduleModule,
+    ScheduleModuleLib.forRoot(),
   ],
   controllers: [AppController],
 })
