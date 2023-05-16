@@ -28,7 +28,6 @@ export class SettingsController {
   @UseGuards(JwtAuthGuard)
   @Get('getOne')
   async getOne(@Request() req) {
-    console.log('get setting: ', req.user)
     if (req.user) {
       return await this.settingsService.findOneByUserId(req.user._id)
     }

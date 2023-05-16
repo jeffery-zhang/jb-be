@@ -20,7 +20,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('verify')
   public async verify(@Request() req) {
-    console.log('verify user: ', req.user)
     return this.authService.verify(req.user)
   }
 

@@ -30,8 +30,6 @@ export class PostsService {
         { intro: { $regex: new RegExp(params.keywords, 'i') } },
       ])
 
-    // 匹配某个分类下的文档
-    conditions.category && (conditions.category = { $in: [params.category] })
     // 匹配所有包含某个标签的文档
     conditions.tags && (conditions.tags = { $in: [params.tags] })
 
