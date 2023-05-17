@@ -14,7 +14,7 @@ export class ScheduleService {
     private readonly minioService: MinioService,
     private readonly configService: ConfigService,
     @InjectModel(Banner.name) private readonly bannerModel: Model<Banner>,
-    @InjectModel('Post') private readonly postModel: Model<Post>,
+    @InjectModel(Post.name) private readonly postModel: Model<Post>,
   ) {}
 
   async generateUpdates(
