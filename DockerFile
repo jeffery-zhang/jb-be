@@ -6,4 +6,4 @@ WORKDIR /jblog-backend
 
 RUN npm install -g pnpm pm2 && pnpm install && pnpm run build
 
-CMD [ "pm2", "start", "dist/main.js", "--name", "jblog-backend"]
+CMD ["npx", "pm2", "start", "dist/main.js", "--name", "jblog-backend"]
