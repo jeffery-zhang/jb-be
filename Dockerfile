@@ -1,9 +1,9 @@
 FROM node:18
 
-COPY . ./jblog-backend
+COPY ./dist ./jblog-backend
 
 WORKDIR /jblog-backend
 
-RUN npm install -g pnpm pm2 && pnpm install && pnpm run build
+RUN npm install -g pm2
 
 CMD ["npx", "pm2", "start", "dist/main.js", "--name", "jblog-backend"]
