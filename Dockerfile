@@ -1,9 +1,15 @@
 FROM node:18
 
-COPY ./dist ./jblog-backend
+WORKDIR /usr/src/jblog-backend
 
-WORKDIR /jblog-backend
+COPY package.json ./
 
-RUN npm install -g pm2
+COPY pnpm-lock.yaml ./
 
-CMD ["npx", "pm2", "start", "dist/main.js", "--name", "jblog-backend"]
+RUN pnpm install
+
+COPY . .
+
+RUN pnpm run build
+
+CMD [ "node", "dist/main.js" ]
