@@ -23,9 +23,15 @@ import { ScheduleModule } from './schedule/schedule.module'
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('DB_FULLPATH'),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        console.log(
+          'connect to mongodb with uri: ',
+          configService.get('DB_FULLPATH'),
+        )
+        return {
+          uri: configService.get('DB_FULLPATH'),
+        }
+      },
       inject: [ConfigService],
     }),
     AuthModule,
