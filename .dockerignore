@@ -1,4 +1,11 @@
-Dockerfile
-.dockerignore
 node_modules
-dist
+npm-debug.log
+.DS_Store
+*.log
+npm-cache
+yarn-cache
+yarn-error.log
+.env
+.env.production
+.env.test
+.env.development
