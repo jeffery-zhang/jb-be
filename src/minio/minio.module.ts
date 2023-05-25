@@ -14,7 +14,7 @@ import { SettingsModule } from '../settings/settings.module'
         port: Number(configService.get('MINIO_PORT')),
         accessKey: configService.get('MINIO_USER'),
         secretKey: configService.get('MINIO_PWD'),
-        useSSL: false,
+        useSSL: true,
       }),
       inject: [ConfigService],
     }),
