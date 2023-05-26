@@ -8,7 +8,7 @@ import {
 
 export class CreatePostDto {
   @IsString()
-  @Length(1, 20)
+  @Length(1, 70)
   title: string
 
   @IsString()
