@@ -46,9 +46,7 @@ export class MinioService {
 
   async updateLink(oldUrl: string, bucket: string = this.defaultBucket) {
     const validUrl = () => {
-      const baseUrl = `${this.configService.get(
-        'MINIO_HOST',
-      )}:${this.configService.get('MINIO_PORT')}`
+      const baseUrl = this.configService.get('MINIO_HOST')
       if (oldUrl.includes(baseUrl)) {
         return true
       }
