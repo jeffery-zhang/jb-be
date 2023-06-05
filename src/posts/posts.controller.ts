@@ -39,6 +39,11 @@ export class PostsController {
     return await this.postsService.findOneById(id)
   }
 
+  @Get('siblingsTwo/:id')
+  async siblingsTwo(@Param('id', ObjectIdPipe) id: string) {
+    return await this.postsService.siblingsTwo(id)
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post('save')
   async create(@Request() req, @Body() createPostDto: CreatePostDto) {

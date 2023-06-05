@@ -81,4 +81,19 @@ export class PostsService {
       { new: true },
     )
   }
+
+  async siblingsTwo(id: string) {
+    const ids = await this.getAllIds()
+    const prevId = ids[ids.findIndex((i) => i._id.toString() === id) - 1]?._id
+    const nextId = ids[ids.findIndex((i) => i._id.toString() === id) + 1]?._id
+
+    return {
+      prev: prevId
+        ? await this.postModel.findById(prevId).select('_id title')
+        : undefined,
+      next: nextId
+        ? await this.postModel.findById(nextId).select('_id title')
+        : undefined,
+    }
+  }
 }
